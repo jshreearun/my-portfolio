@@ -6,8 +6,11 @@ import mimetypes
 
 def lambda_handler(event, context):
 
-        s3 = boto3.resource('s3')
+    sns = boto3.resource('sns')
+    topic = sns.Topic('arn:aws:sns:us-east-1:026796352901:deployPortfolioTopic')
 
+    try:
+        s3 = boto3.resource('s3')
         portfolio_bucket = s3.Bucket('portfolio.jblog.click')
         build_bucket = s3.Bucket('portfoliobuild.jblog.click')
         portfolio_zip = StringIO.StringIO()
@@ -20,4 +23,9 @@ def lambda_handler(event, context):
                 ExtraArgs={'ContentType': mimetypes.guess_type(nm)[0]})
                 portfolio_bucket.Object(nm).Acl().put(ACL='public-read')
         print "Job done"
-        return 'Hello from Lambda'
+        topic.publish(Subject="Portfolio", Message="This is message to inform Portfolio got deployed successfully")
+    except:
+        topic.publish(Subject="Portfolio failed", Message="This is message to inform Portfolio was not deployed")
+        raise
+
+    return 'Hello from Lambda'
