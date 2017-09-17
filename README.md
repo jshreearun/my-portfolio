@@ -1,8 +1,12 @@
 # My-portfolio
 This is my professional portfolio. It uses AWS and ReactJS.
 
-# Technologies used so far
+# Technologies used
 
 Github
 SSH
 Gitbash
+HTML
+CSS
+Font awesome
+Google Fonts
